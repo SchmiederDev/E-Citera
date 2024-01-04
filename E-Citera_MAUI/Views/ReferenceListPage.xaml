@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="E_Citera_MAUI.Views.ReferenceListPage"
+             xmlns:viewmodel="clr-namespace:E_Citera_MAUI.ViewModels"
+             xmlns:model="clr-namespace:E_Citera_MAUI.Models"
+             x:DataType="viewmodel:ReferenceListView"
+             Title="Reference Lists">
+    
+    <!-- For a note on the purpose of 'ReferenceListPage' and its ViewModel 'ReferenceListView',
+        see 'ReferenceListPage.xaml.cs -->
+
+    <ContentPage.Resources>
+        <Style x:Key="RLP_MenuBtn" TargetType="Button">
+            <Setter Property="WidthRequest" Value="150"/>
+            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="HorizontalOptions" Value="Start"/>
+        </Style>
+        <Style x:Key="RLP_MenuEntry" TargetType="Entry">
+            <Setter Property="HeightRequest" Value="30"/>
+            <Setter Property="WidthRequest" Value="150"/>
+            <Setter Property="HorizontalOptions" Value="Start"/>
+        </Style>
+        <Style x:Key="RList_Label" TargetType="Label">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="PoppinsRegular"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+        </Style>
+
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Margin="10, 25, 50, 50">
+            <HorizontalStackLayout Spacing="10">
+                <VerticalStackLayout Spacing="20">
+                    <Button Text="New List" 
+                    Command="{Binding NewReferenceListCommand}" 
+                    Style="{StaticResource RLP_MenuBtn}"/>
+                    <Entry Placeholder="List Name" 
+                   Text="{Binding CurrentListName}" 
+                   IsEnabled="{Binding ListNameEntryIsEnabled}" 
+                   Style="{StaticResource RLP_MenuEntry}"/>
+                    <Button Text="Edit List Name" 
+                    Command="{Binding EnableListNameEditCommand}"
+                    Style="{StaticResource RLP_MenuBtn}"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Spacing="20">
+                    <Button Text="Save"
+                            Command="{Binding SaveOnSaveButtonClickCommand}" 
+                            Style="{StaticResource RLP_MenuBtn}" />
+                    <Picker ItemsSource="{Binding ReferenceListNames}"
+                            SelectedItem="{Binding ListNameSelected}"
+                            HeightRequest="30"
+                            WidthRequest="150"/>
+                    <Button Text="Load Selected"
+                            Command="{Binding LoadReferenceListCommand}"
+                            Style="{StaticResource RLP_MenuBtn}"/>
+                </VerticalStackLayout>                
+            </HorizontalStackLayout>
+            <Button Text="Delete" 
+                    Command="{Binding DeleteEntireReferenceListCommand}"
+                    Style="{StaticResource RLP_MenuBtn}"
+                    HorizontalOptions="Start"
+                    Margin="85, 20, 0, 0"/>
+            <ScrollView Margin="50">
+                <RefreshView IsRefreshing="{Binding ShouldRefresh}">
+                    <ListView ItemsSource="{Binding ReferenceListTitles}" 
+                              SelectedItem="{Binding SelectedTitle}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Title">
+                                <ViewCell>
+                                    <HorizontalStackLayout 
+                                        Spacing="10" 
+                                        WidthRequest="200" 
+                                        HorizontalOptions="Start">
+                                        <Label Text="{Binding Authors[0].LastName}" Style="{StaticResource RList_Label}" Grid.Column="0"/>
+                                        <Label Text="{Binding ItemTitle}" Style="{StaticResource RList_Label}" Grid.Column="1"/>
+                                        <Label Text="{Binding YearOfPublication}" Style="{StaticResource RList_Label}" Grid.Column="2"/>
+                                        <Button Text="X" 
+                                                HeightRequest="20" 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:ReferenceListView}},
+                                                Path=RemoveTitleCommand}" 
+                                                CommandParameter="{Binding Title_ID}" 
+                                                Grid.Column="3"/>
+                                    </HorizontalStackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </RefreshView>
+            </ScrollView>
+            <HorizontalStackLayout Spacing="20">
+                <VerticalStackLayout 
+                    HorizontalOptions="Start"
+                    VerticalOptions="Start"
+                    Spacing="15" 
+                    Margin="10, 50, 0, 50">
+                    <Picker ItemsSource="{Binding StyleNames}" 
+                            SelectedItem="{Binding StyleSelected}" 
+                            HorizontalOptions="Start" 
+                            WidthRequest="150"/>
+                    <Button Text="Cite" 
+                            Command="{Binding CiteReferenceListCommand}" 
+                            WidthRequest="150"
+                            HorizontalOptions="Start"/>
+                </VerticalStackLayout>
+                <ScrollView MinimumHeightRequest="150" 
+                            MaximumHeightRequest="300" 
+                            WidthRequest="300">
+                    <Editor x:Name="ReferenceOutEd" 
+                            Text="{Binding CitationOut}" 
+                            AutoSize="TextChanges"/>
+                </ScrollView>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

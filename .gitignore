@@ -396,3 +396,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+E-Citera_MAUI/Resources/AppIcon/appiconfg.svg
+*.svg
+*.png
+*.ttf
+E-Citera_MAUI.sln
+E-Citera_MAUI/E-Citera_MAUI.csproj

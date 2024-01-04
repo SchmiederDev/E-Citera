@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="E_Citera_MAUI.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:view="clr-namespace:E_Citera_MAUI.Views"
+    Shell.FlyoutBehavior="Disabled" >
+
+    <TabBar>
+        <ShellContent Title="Overview" 
+                      ContentTemplate="{DataTemplate view:MainPage}"/>
+        <ShellContent Title="Edit" 
+                      ContentTemplate="{DataTemplate view:TitleEditPage}"/>
+        <ShellContent Title="Citation Styles" 
+              ContentTemplate="{DataTemplate view:CitationStylesPage}"/>
+        <ShellContent Title="Reference Lists" 
+              ContentTemplate="{DataTemplate view:ReferenceListPage}"/>
+    </TabBar>
+
+</Shell>

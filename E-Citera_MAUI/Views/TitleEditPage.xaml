@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             x:Class="E_Citera_MAUI.Views.TitleEditPage"
+             xmlns:viewmodel="clr-namespace:E_Citera_MAUI.ViewModels"
+             xmlns:model="clr-namespace:E_Citera_MAUI.Models"             
+             x:DataType="viewmodel:TitleEditView"
+             Title="Edit">
+
+    <!-- For a note on what 'TitleEditPage' and its ViewModel 'TitleEditView' do,
+        see 'TitleEditPage.xaml.cs' -->
+
+    <ContentPage.Resources>
+        <Style x:Key="FieldDescriptionLabel" TargetType="Label">
+            <Setter Property="Margin" Value="10, 0, 0, 0"/>
+            <Setter Property="FontSize" Value="20"/>
+            
+        </Style>
+        <Style x:Key="EntryField" TargetType="Entry">
+            <Setter Property="Margin" Value="10, 0, 0, 0"/>
+            <Setter Property="WidthRequest" Value="300"/>
+            <Setter Property="HorizontalOptions" Value="Start"/>
+        </Style>
+        <Style x:Key="EditBtn" TargetType="Button">
+            <Setter Property="HeightRequest" Value="50"/>
+            <Setter Property="WidthRequest" Value="110"/>
+            <Setter Property="BackgroundColor" 
+                    Value="{AppThemeBinding Light={StaticResource SplashyViolett}, 
+                    Dark={StaticResource Petrol}}"/>
+        </Style>
+        <Style x:Key="AddBtn" TargetType="Button">
+            <Setter Property="Margin" Value="75, 10, 0, 20"/>
+            <Setter Property="HeightRequest" Value="40"/>
+            <Setter Property="WidthRequest" Value="150"/>
+            <Setter Property="HorizontalOptions" Value="Start"/>
+            <Setter Property="BackgroundColor" 
+            Value="{AppThemeBinding Light={StaticResource SplashyViolett}, 
+            Dark={StaticResource Petrol}}"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView >
+        
+        <VerticalStackLayout 
+            x:Name="EditMask" 
+            x:DataType="viewmodel:TitleEditView"
+            Spacing="10">
+            <HorizontalStackLayout Spacing="10" VerticalOptions="Start">
+                <Button Text="New" Style="{StaticResource EditBtn}"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TitleEditView}}, 
+                        Path=NewTitleCommand}"/>
+                <Button Text="Save" Margin="0, 25" Style="{StaticResource EditBtn}"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TitleEditView}}, 
+                        Path=SaveCommand}"
+                        CommandParameter="{Binding .}"/>
+                <Button Text="Delete" Style="{StaticResource EditBtn}"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TitleEditView}}, 
+                        Path=DeleteActionCommand}"
+                        CommandParameter="{Binding .}"/>
+            </HorizontalStackLayout>
+
+            <Label Text="Author:" Style="{StaticResource FieldDescriptionLabel}"/>
+            <CollectionView ItemsSource="{Binding CurrentTitle.Authors}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Author">
+                        <VerticalStackLayout x:Name="AuthorEntryStack" 
+                                             Spacing="10" 
+                                             HorizontalOptions="Start" 
+                                             BackgroundColor="{AppThemeBinding Light={StaticResource White},
+                                            Dark={StaticResource Gray900}}">
+                            <Entry Text="{Binding FirstName}" 
+                                   Placeholder="First Name" 
+                                   Style="{StaticResource EntryField}"/>
+                            <Entry Text="{Binding LastName}" 
+                                   Placeholder="Last Name" 
+                                   Style="{StaticResource EntryField}"/>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Add Author"
+                    Command="{Binding AddAuthorCommand}"
+                    Style="{StaticResource AddBtn}"/>
+            <Label Text="Title:" Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry x:Name="Title_Entry" 
+                   Placeholder="Title" 
+                   Text="{Binding CurrentTitle.ItemTitle}"
+                   Style="{StaticResource EntryField}"/>
+
+            <Label Text="Editor:" Style="{StaticResource FieldDescriptionLabel}"/>
+            <CollectionView ItemsSource="{Binding CurrentTitle.Editors}" 
+                            BackgroundColor="{AppThemeBinding Light={StaticResource White}, 
+                            Dark={StaticResource Gray900}}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Author">
+                        <VerticalStackLayout Spacing="10" HorizontalOptions="Start">
+                            <Entry Text="{Binding FirstName}" 
+                                   Placeholder="First Name"
+                                   Style="{StaticResource EntryField}"/>
+                            <Entry Text="{Binding LastName}" 
+                                   Placeholder="Last Name"
+                                   Style="{StaticResource EntryField}"/>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Add Editor" 
+                    Command="{Binding AddEditorCommand}"
+                    Style="{StaticResource AddBtn}"/>
+
+            <Label Text="Appeared in (Series, Collective Volume or Journal Title): " 
+                   Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry x:Name="Series_Entry" 
+                   Placeholder="Series Title" 
+                   Text="{Binding CurrentTitle.SeriesTitle}"
+                   Style="{StaticResource EntryField}"/>
+
+            <Label Text="Volume: " Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry x:Name="Volume_Entry" 
+                   Placeholder="Volume" 
+                   Text="{Binding CurrentTitle.Volume}"
+                   Style="{StaticResource EntryField}"/>
+
+            <Label Text="Issue: " Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry x:Name="Issue_Entry" 
+                   Placeholder="Issue" 
+                   Text="{Binding CurrentTitle.Issue}"
+                   Style="{StaticResource EntryField}"/>
+
+            <Label Text="Publisher:" Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry x:Name="Publisher" 
+                   Placeholder="Publisher" 
+                   Text="{Binding CurrentTitle.Publisher}"
+                   Style="{StaticResource EntryField}"/>
+            <Label Text="Place of Publication: " Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry x:Name="Place_Entry" 
+                   Placeholder="Place of Publication" 
+                   Text="{Binding CurrentTitle.PlaceOfPublication}"
+                   Style="{StaticResource EntryField}"/>
+
+            <Label Text="Year of Publication: " Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry x:Name="Year_Entry" 
+                   Placeholder="Year" 
+                   Text="{Binding CurrentTitle.YearOfPublication}"
+                   Style="{StaticResource EntryField}">
+                <Entry.Behaviors>
+                    <toolkit:EventToCommandBehavior 
+                        x:TypeArguments="x:Object"  
+                        EventName="Unfocused" 
+                        Command="{Binding CheckYearTextCommand}"
+                        CommandParameter="{x:Reference Year_Entry}">                        
+                    </toolkit:EventToCommandBehavior>
+                </Entry.Behaviors>
+            </Entry>
+
+            <Label Text="Pages" Style="{StaticResource FieldDescriptionLabel}"/>
+            <Grid ColumnDefinitions="auto, auto" ColumnSpacing="50">
+                <Entry Placeholder="Page: e. g. 1..." Text="{Binding CurrentTitle.PagesBegin}" Grid.Column="0"/>
+                <Entry Placeholder="- ...Page." Text="{Binding CurrentTitle.PagesEnd}" Grid.Column="1"/>
+            </Grid>
+
+            <Label Text="Web Adress (Link)" Style="{StaticResource FieldDescriptionLabel}"/>
+            <Entry Placeholder="Web Adress" 
+                   Text="{Binding CurrentTitle.WebAdress}"
+                   Style="{StaticResource EntryField}"/>
+
+            <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                <Picker ItemsSource="{Binding StyleNames}" SelectedItem="{Binding StyleSelected}" WidthRequest="200" HorizontalOptions="Start" Grid.Column="0"/>
+                <Button Text="Cite" Style="{StaticResource EditBtn}" Command="{Binding CiteTitleCommand}" Grid.Column="1"/>
+            </Grid>
+
+            <Editor x:Name="OutputText" 
+                    Text="{Binding OutPutText}" 
+                    HeightRequest="200" 
+                    WidthRequest="400" 
+                    HorizontalOptions="Start"/>                       
+            
+        </VerticalStackLayout>
+        
+    </ScrollView>
+    
+</ContentPage>

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             x:Class="E_Citera_MAUI.Views.CitationStylesPage"
+             xmlns:viewmodel="clr-namespace:E_Citera_MAUI.ViewModels"
+             xmlns:model="clr-namespace:E_Citera_MAUI.Models"
+             x:DataType="viewmodel:CitationStyleView"
+             Title="Citation Styles">
+
+    <!-- For a note on the purpose and functionality of 'CitationStylesPage' 
+         and its ViewModel 'CitationStylesPage', see 'CitationStylesPage.xaml.cs' -->
+
+    <ContentPage.Resources>
+        <Style TargetType="Label" x:Key="CitationViewSectionHeader">
+            <Setter Property="FontSize" Value="24"/>
+        </Style>
+        <Style TargetType="Label" x:Key="CitationViewSectionLabel">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+        </Style>
+        <Style TargetType="Picker" x:Key="FieldPicker">
+            <Setter Property="WidthRequest" Value="180"/>
+        </Style>
+    </ContentPage.Resources>
+    <Grid ColumnDefinitions="auto, auto">
+        <ScrollView Grid.Column="0">
+            <VerticalStackLayout x:DataType="viewmodel:CitationStyleView" Margin="20, 20, 0, 0" Spacing="20">
+                <Label Text="Citation Style Name:" 
+                       Style="{StaticResource CitationViewSectionHeader}"/>
+                <Entry Placeholder="Style Name" 
+                       Text="{Binding CurrentCitationStyle.StyleName}" 
+                       WidthRequest="350" 
+                       HorizontalOptions="Start"/>
+                <Label Text="Author Citation:" Style="{StaticResource CitationViewSectionHeader}"/>
+                <Grid ColumnDefinitions="auto, auto" 
+                      ColumnSpacing="20" 
+                      RowSpacing="20">
+                    <CheckBox x:Name="LastNameFirstCB" 
+                              IsChecked="{Binding CurrentCitationStyle.LastNameFirst}" 
+                              Grid.Column="0"/>
+                    <Label Text="Last name first" 
+                           VerticalOptions="Center" 
+                           Grid.Column="1"/>
+                </Grid>
+                <Label Text="Author Separator:" Style="{StaticResource CitationViewSectionLabel}"/>
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Picker ItemsSource="{Binding AuthorSeparatorOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.AuthorSeparator}"
+                            VerticalOptions="Center"
+                            Grid.Column="0"/>
+                    <VerticalStackLayout Grid.Column="1">
+                        <Label Text="Will be used to separate authors in citation if there are several,"/>
+                        <Label Text="e.g.: Doe, John[/] Doe, Jane."/>
+                    </VerticalStackLayout>
+                </Grid>
+                <Grid ColumnDefinitions="auto, auto, auto, auto" ColumnSpacing="20" RowSpacing="20">
+                    <Label Text="Enable 'et al.'" 
+                           VerticalOptions="Center" 
+                           Style="{StaticResource CitationViewSectionLabel}" 
+                           Grid.Column="0"/>
+                    <CheckBox x:Name="EnableAuthorsEtAl_CB" 
+                              IsChecked="{Binding CurrentCitationStyle.EnableAsEtAl_Authors}" 
+                              Grid.Column="1"/>
+                    <Label Text="Number of authors mentioned:" 
+                           VerticalOptions="Center" 
+                           Grid.Column="2"/>
+                    <Entry Text="{Binding AuthorsEtAlNumberAsString}" Placeholder="Number" Grid.Column="3"/>
+                </Grid>
+                <VerticalStackLayout>
+                    <Label Text="If you enable 'et al.' only the specified number of authors will be cited with this citation style"/>
+                    <Label Text="even if you saved more authors for the respective title in your individual data base."/>
+                </VerticalStackLayout>
+                <Label Text="Et al. Tag:" Style="{StaticResource CitationViewSectionLabel}"/>
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Entry Placeholder="Et al." 
+                   Text="{Binding CurrentCitationStyle.EtAlTag_Authors}" 
+                   VerticalOptions="Start"
+                   HeightRequest="40"
+                   WidthRequest="200"
+                   Grid.Column="0"/>
+                    <VerticalStackLayout VerticalOptions="End" Grid.Column="1">
+                        <Label Text="Will be applied if 'et al.' is enabled for authors."/>
+                        <Label Text="Will follow the last mentioned author:"/>
+                        <Label Text="e. g. if you enter 'et al.' here and 'et al.' is enabled"/>
+                        <Label Text="this text will follow the last mentioned author like this:"/>
+                        <Label Text="'Doe, John [et al.]' (= the tag)"/>
+                    </VerticalStackLayout>
+                </Grid>
+                <Label Text="Editor Citation:" Style="{StaticResource CitationViewSectionHeader}"/>
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Mark as Editors:" 
+                           VerticalOptions="Center" 
+                           Style="{StaticResource CitationViewSectionLabel}" 
+                           Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding CurrentCitationStyle.MarkAsEditors}" Grid.Column="1"/>
+                </Grid>
+                <VerticalStackLayout>
+                    <Label Text="If 'Mark as editors' is checked, the tag specified as 'Editors Tag'"/>
+                    <Label Text="will follow the names of editors in a citation, e. g.:"/>
+                    <Label Text="Doe, John/ Doe, Jane [Eds.]* (= the tag)"/>
+                </VerticalStackLayout>
+                <Grid ColumnDefinitions="auto, auto, auto, auto" 
+                      ColumnSpacing="20" 
+                      RowSpacing="20">
+                    <Label Text="Enable 'et al.' for Editors" 
+                           VerticalOptions="Center" 
+                           Style="{StaticResource CitationViewSectionLabel}"
+                           Grid.Column="0"/>
+                    <CheckBox x:Name="EnableEditorsEtAl_CB" 
+                              IsChecked="{Binding CurrentCitationStyle.EnableAsEtAl_Editors}" 
+                              Grid.Column="1"/>
+                    <Label Text="Number of editors mentioned:" VerticalOptions="Center" Grid.Column="2"/>
+                    <Entry Placeholder="Et al." Text="{Binding EditorNumberAsString}" Grid.Column="3"/>
+                </Grid>
+                <Label Text="Editor Tag:" Style="{StaticResource CitationViewSectionLabel}"/>
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Entry Placeholder="Et al." 
+                           Text="{Binding CurrentCitationStyle.EditorTag}" 
+                           VerticalOptions="Start"
+                           HeightRequest="40"
+                           WidthRequest="200"
+                           Grid.Column="0"/>
+                    <VerticalStackLayout VerticalOptions="End" Grid.Column="1">
+                        <Label Text="Will be applied if 'et al.' is enabled for editors."/>
+                        <Label Text="Will follow the last mentioned editor:"/>
+                        <Label Text="e. g. if you enter 'Ed.' here and 'et al.' is enabled"/>
+                        <Label Text="'Doe, John [Ed.]'"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Label Text="Titel Citation:" Style="{StaticResource CitationViewSectionHeader}"/>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Main title in quotes:" 
+                           Style="{StaticResource CitationViewSectionLabel}" 
+                           Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding CurrentCitationStyle.TitleInQuotes}" Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Series title in quotes:" 
+                           Style="{StaticResource CitationViewSectionLabel}" 
+                           Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding CurrentCitationStyle.SeriesInQuotes}" Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto, auto" ColumnSpacing="25">
+                    <Label Text="Add 'in'-Prefix:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding CurrentCitationStyle.In_Prefix}" Grid.Column="1"/>
+                    <VerticalStackLayout Grid.Column="2">
+                        <Label Text="If this option is enabled an 'in' will automatically be inserted"/>
+                        <Label Text="in front of the editors and the series title."/>
+                        <Label Text="E. g.: 'Doe, John: Depictions of turtles in classical antiquity; [in:] Classical Antiquity 143(2007), pp. 23-107.'"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto, auto" ColumnSpacing="25">
+                    <Label Text="Capitalize 'In'citation:" 
+                           Style="{StaticResource CitationViewSectionLabel}" 
+                           Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding CurrentCitationStyle.In_Prefix}" Grid.Column="1"/>
+                    <VerticalStackLayout Grid.Column="2">
+                        <Label Text="If this option is 'in' will be capitalized."/>
+                        <Label Text="E. g.: 'Doe, John: Depictions of turtles in classical antiquity; [In:] Classical Antiquity 143(2007), pp. 23-107.'"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Issue number in braces:" 
+                           Style="{StaticResource CitationViewSectionLabel}"
+                           Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding CurrentCitationStyle.IssueInBraces}" Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Year in braces:" 
+                           Style="{StaticResource CitationViewSectionLabel}" 
+                           Grid.Column="0"/>
+                    <CheckBox IsChecked="{Binding CurrentCitationStyle.YearInBraces}" Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 1:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_00}" 
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 1:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_00}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 2:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_01}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 2:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_01}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 3:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_02}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 3:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_02}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 4:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_03}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 4:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_03}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 5:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_04}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 5:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_04}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 6:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_05}"
+                            Style="{StaticResource FieldPicker}"
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 6:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_05}" 
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 7:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_06}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 7:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_06}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 8:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_07}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 8:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_07}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Citation Field 9:" Style="{StaticResource CitationViewSectionLabel}" Grid.Column="0"/>
+                    <Picker ItemsSource="{Binding CitationFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.CitationField_08}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Label Text="Separator 9 will appear in front of pages."/>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Separator 9:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding SeparatorFieldSelectionOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Separator_08}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="auto, auto" ColumnSpacing="25">
+                    <Label Text="Finalizer:" Style="{StaticResource CitationViewSectionLabel}"/>
+                    <Picker ItemsSource="{Binding FinalizerOptions}" 
+                            SelectedItem="{Binding CurrentCitationStyle.Finalizer}"  
+                            Style="{StaticResource FieldPicker}" 
+                            Grid.Column="1"/>
+                </Grid>
+
+                <VerticalStackLayout>
+                    <Label Text="The 'Finalizer' will appear at the end of your citation"/>
+                    <Label Text="- after pages and before a web adress if any has been specified -"/>
+                    <Label Text="In most cases a citation ends with a dot."/>
+                    <Label Text="Change only if you want to annex a web adress with a comma"/>
+                    <Label Text="instead of a dot - for example."/>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+        <VerticalStackLayout Spacing="20" Margin="25, 50, 0, 0" Grid.Column="1">
+            <Button Text="New Style" 
+                    WidthRequest="150" 
+                    HorizontalOptions="Start"
+                    Command="{Binding NewCitationStyleCommand}"/>
+            <Grid ColumnDefinitions="auto, auto" ColumnSpacing="20">
+                <Button Text="Load Style" 
+                        WidthRequest="150" 
+                        Command="{Binding LoadCitationStyleCommand}"
+                        Grid.Column="0"/>
+                <Picker ItemsSource="{Binding StyleNames}" 
+                        WidthRequest="150" 
+                        SelectedItem="{Binding StyleSelected}"
+                        Grid.Column="1"/>
+
+            </Grid>
+            <Button Text="Save Style" 
+                    WidthRequest="150" 
+                    HorizontalOptions="Start"
+                    Command="{Binding SaveCitationStyleCommand}"/>
+            <Button Text="Delete Style" 
+                    WidthRequest="150" 
+                    HorizontalOptions="Start"
+                    Command="{Binding DeleteCitationStyleCommand}"/>
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodel="clr-namespace:E_Citera_MAUI.ViewModels"
+             xmlns:model="clr-namespace:E_Citera_MAUI.Models"
+             x:Class="E_Citera_MAUI.Views.MainPage"
+             x:DataType="viewmodel:TitleView"
+             Title="Title Overview">
+
+        <!-- For are note on the purpose of 'MainPage' and its Viewmodel 'TitleView' do,
+        see: 'MainPage.xaml.cs' -->    
+
+    <ContentPage.Resources>
+        <Style x:Key="TitleLabel" TargetType="Label">
+            <Setter Property="FontFamily" Value="PoppinsRegular"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="SearchResult" TargetType="Label">
+            <Setter Property="FontFamily" Value="PoppinsRegular"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+
+        <Style x:Key="MainPageImageBtn" TargetType="ImageButton">
+            <Setter Property="Aspect" Value="AspectFill"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="VerticalOptions" Value="Start"/>
+            <Setter Property="HeightRequest" Value="60"/>
+            <Setter Property="WidthRequest" Value="60"/>
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+
+        <Style x:Key="MainPageCancelBtn" TargetType="Button">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="FontSize" Value="48"/>
+            <Setter Property="VerticalOptions" Value="Start"/>
+            <Setter Property="HeightRequest" Value="60"/>
+            <Setter Property="WidthRequest" Value="60"/>            
+            <Setter Property="Padding" Value="5"/>
+        </Style>
+        
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout>
+            <SearchBar Placeholder="Search Titles" 
+                       Text="{Binding SearchText}" 
+                       WidthRequest="400">
+                <SearchBar.Behaviors>
+                    <toolkit:EventToCommandBehavior 
+                        EventName="TextChanged" 
+                        Command="{Binding SearchTitlesCommand}">                        
+                    </toolkit:EventToCommandBehavior>
+                </SearchBar.Behaviors>
+            </SearchBar>
+            <ScrollView Margin="0, 50, 50, 0">
+                <RefreshView IsRefreshing="{Binding SearchShouldRefresh}" 
+                             HorizontalOptions="Center">
+                    <ListView ItemsSource="{Binding SearchResults}" 
+                              SelectedItem="{Binding SelectedFromSearch}" 
+                              RowHeight="50">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Title">
+                                <ViewCell>
+                                    <HorizontalStackLayout 
+                                        Spacing="15" 
+                                        Margin="5, 0, 0, 0" 
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Center"
+                                        WidthRequest="600">
+                                        <Label Text="{Binding Authors[0].FirstName}" Style="{StaticResource SearchResult}"/>
+                                        <Label Text="{Binding Authors[0].LastName}" Style="{StaticResource SearchResult}"/>
+                                        <Label Text="{Binding ItemTitle}" Style="{StaticResource SearchResult}"/>
+                                        <Label Text="{Binding YearOfPublication}" Style="{StaticResource SearchResult}"/>
+                                    </HorizontalStackLayout>
+                                </ViewCell>
+                            </DataTemplate>                            
+                        </ListView.ItemTemplate>
+                        <ListView.Behaviors>
+                            <toolkit:EventToCommandBehavior 
+                                EventName="ItemTapped" 
+                                Command="{Binding ChooseEditOrReferenceCommand}"
+                                CommandParameter="{Binding SelectedFromSearch}">                                
+                            </toolkit:EventToCommandBehavior>
+                        </ListView.Behaviors>
+                    </ListView>
+                </RefreshView>
+            </ScrollView>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <RefreshView Command="{Binding Load_TitleListCommand}" 
+                             IsRefreshing="{Binding ShouldRefresh}" 
+                             WidthRequest="550" 
+                             HorizontalOptions="Fill" 
+                             Grid.Column="1">
+                    <CollectionView x:Name="TitleDisplay" ItemsSource="{Binding TitleList}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Title">
+                                <Frame WidthRequest="500" Margin="5">
+                                    <HorizontalStackLayout Padding="10" Spacing="75">
+                                        <VerticalStackLayout 
+                                            HeightRequest="200" 
+                                            WidthRequest="250" 
+                                            Padding="5">
+                                            <Label Text="{Binding Authors[0].FirstName}" 
+                                                   Style="{StaticResource TitleLabel}"/>
+                                            <Label Text="{Binding Authors[0].LastName}" 
+                                                   Style="{StaticResource TitleLabel}"/>
+                                            <Label Text="{Binding ItemTitle}" 
+                                                   Style="{StaticResource TitleLabel}"/>
+                                            <Label Text="{Binding Publisher}" 
+                                                   Style="{StaticResource TitleLabel}"/>
+                                            <Label Text="{Binding PlaceOfPublication}" 
+                                                   Style="{StaticResource TitleLabel}"/>
+                                            <Label Text="{Binding YearOfPublication}" 
+                                                   Style="{StaticResource TitleLabel}"/>
+                                        </VerticalStackLayout>
+                                        <VerticalStackLayout Spacing="20">
+                                            <ImageButton Source="edit_icon_dummy_png.png" 
+                                                         Style="{StaticResource MainPageImageBtn}" 
+                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TitleView}}, 
+                                                         Path=GoToTitleEditPageCommand}"
+                                                         CommandParameter="{Binding .}"/>
+                                            <Button Text="+" Style="{StaticResource MainPageCancelBtn}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TitleView}}, 
+                                                    Path=GoToTitleReferenceListPageCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            <Button Text="X" Style="{StaticResource MainPageCancelBtn}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:TitleView}}, 
+                                                    Path=DeleteActionCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                        </VerticalStackLayout>
+                                    </HorizontalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </RefreshView>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

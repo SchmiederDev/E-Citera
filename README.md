@@ -1,7 +1,3 @@
-[!Note]: On E-Citera as my final project for CS50: To keep the filesize down I did not include some of the .Net-MAUI standard files
-as well as the standard project files (such as '.sln' for a Visual-Studio-Project) - otherwise this project would have had filesize
-of more than 500MB. - But the project folder includes all important files where I wrote my code in.
-
 # E-Citera
 
 E-Citera is a reference administration software that helps users to keep track of all the literature (books, papers and articles etc.) they read and need for their academic work and private purposes and interests as well of course.
